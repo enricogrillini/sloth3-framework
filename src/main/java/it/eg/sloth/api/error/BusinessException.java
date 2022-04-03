@@ -1,10 +1,6 @@
-package it.eg.sloth.core.base;
+package it.eg.sloth.api.error;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
+import lombok.Getter;
 
 /**
  * Project: sloth-framework
@@ -21,20 +17,24 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @author Enrico Grillini
  */
-class ObjectUtilTest {
+@Getter
+public class BusinessException extends RuntimeException {
 
-    @Test
-    void coalesceTest() {
-        assertEquals("Prova", ObjectUtil.coalesce("", null, "Prova", "Pippo"));
-        assertEquals(null, ObjectUtil.coalesce("", null));
-        assertEquals(null, ObjectUtil.coalesce());
-        assertEquals(Double.valueOf(5), ObjectUtil.coalesce("", null, Double.valueOf(5)));
+    private final ResponseCode responseCode;
+
+    public BusinessException(ResponseCode businessErrorCode) {
+        super();
+        this.responseCode = businessErrorCode;
     }
 
-    @Test
-    void isNullTest() {
-        assertTrue(ObjectUtil.isNull(null));
-        assertTrue(ObjectUtil.isNull(""));
-        assertFalse(ObjectUtil.isNull(Double.valueOf(0)));
+
+    public BusinessException(Throwable cause) {
+        this(cause, ResponseCode.GENERIC);
     }
+
+    public BusinessException(Throwable cause, ResponseCode businessErrorCode) {
+        super(cause.getMessage(), cause);
+        this.responseCode = businessErrorCode;
+    }
+
 }

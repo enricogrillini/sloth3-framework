@@ -1,10 +1,4 @@
-package it.eg.sloth.core.base;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
+package it.eg.sloth.api.error;
 
 /**
  * Project: sloth-framework
@@ -21,20 +15,21 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @author Enrico Grillini
  */
-class ObjectUtilTest {
+public enum ResponseCode {
 
-    @Test
-    void coalesceTest() {
-        assertEquals("Prova", ObjectUtil.coalesce("", null, "Prova", "Pippo"));
-        assertEquals(null, ObjectUtil.coalesce("", null));
-        assertEquals(null, ObjectUtil.coalesce());
-        assertEquals(Double.valueOf(5), ObjectUtil.coalesce("", null, Double.valueOf(5)));
+    OK("Ok"),
+    DOCUMENTO_NON_TROVATO("Documento non trovato"),
+    DOCUMENTO_GIA_PRESENTE("Id documento è già presente"),
+    GENERIC("Errore generico");
+
+    private String message;
+
+    public String getMessage() {
+        return message;
     }
 
-    @Test
-    void isNullTest() {
-        assertTrue(ObjectUtil.isNull(null));
-        assertTrue(ObjectUtil.isNull(""));
-        assertFalse(ObjectUtil.isNull(Double.valueOf(0)));
+    ResponseCode(String message) {
+        this.message = message;
     }
+
 }

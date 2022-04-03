@@ -1,11 +1,5 @@
 package it.eg.sloth.core.base;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 /**
  * Project: sloth-framework
  * Copyright (C) 2022-2025 Enrico Grillini
@@ -21,20 +15,12 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @author Enrico Grillini
  */
-class ObjectUtilTest {
+public class StringUtil {
 
-    @Test
-    void coalesceTest() {
-        assertEquals("Prova", ObjectUtil.coalesce("", null, "Prova", "Pippo"));
-        assertEquals(null, ObjectUtil.coalesce("", null));
-        assertEquals(null, ObjectUtil.coalesce());
-        assertEquals(Double.valueOf(5), ObjectUtil.coalesce("", null, Double.valueOf(5)));
+    private StringUtil() {
+        // NOP
     }
 
-    @Test
-    void isNullTest() {
-        assertTrue(ObjectUtil.isNull(null));
-        assertTrue(ObjectUtil.isNull(""));
-        assertFalse(ObjectUtil.isNull(Double.valueOf(0)));
-    }
+    public static final String EMPTY = "";
+
 }
