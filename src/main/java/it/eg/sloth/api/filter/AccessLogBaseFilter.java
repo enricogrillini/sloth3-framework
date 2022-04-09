@@ -45,13 +45,17 @@ public class AccessLogBaseFilter implements Filter {
 
         resp.setHeader(REQUEST_ID, requestId);
         try (MDC.MDCCloseable m = MDC.putCloseable(REQUEST_ID, requestId)) {
-            // Access Log IN
-            log.info("IN  - {} - {}, protocol {}, host: {}", req.getMethod(), req.getRequestURI(), req.getProtocol(), req.getRemoteHost());
+            // Access Log IN, (escludo actuator/health)
+            if (!req.getRequestURI().startsWith("/actuator/health")) {
+                log.info("IN  - {} - {}, protocol {}, host: {}", req.getMethod(), req.getRequestURI(), req.getProtocol(), req.getRemoteHost());
+            }
 
             chain.doFilter(request, response);
 
-            // Access Log OUT
-            log.info("OUT - {} - {}, status {}, duration {}", req.getMethod(), req.getRequestURI(), resp.getStatus(), ChronoUnit.MILLIS.between(start, Instant.now()));
+            // Access Log OUT, (escludo actuator/health)
+            if (!req.getRequestURI().startsWith("/actuator/health")) {
+                log.info("OUT - {} - {}, status {}, duration {}", req.getMethod(), req.getRequestURI(), resp.getStatus(), ChronoUnit.MILLIS.between(start, Instant.now()));
+            }
         }
     }
 
