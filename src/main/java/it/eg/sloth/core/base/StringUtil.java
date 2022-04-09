@@ -1,7 +1,7 @@
 package it.eg.sloth.core.base;
 
 /**
- * Project: sloth-framework
+ * Project: sloth3-framework
  * Copyright (C) 2022-2025 Enrico Grillini
  * <p>
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by

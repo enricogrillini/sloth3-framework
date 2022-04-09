@@ -1,4 +1,9 @@
-package it.eg.sloth.core.base;
+package it.eg.sloth.api.error.exception;
+
+import it.eg.sloth.api.error.model.ResponseCode;
+import lombok.Getter;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * Project: sloth3-framework
@@ -15,36 +20,19 @@ package it.eg.sloth.core.base;
  *
  * @author Enrico Grillini
  */
-public class ObjectUtil {
+@Getter
+public abstract class FrameException extends RuntimeException {
 
-    private ObjectUtil() {
-        // NOP
+    private final ResponseCode code;
+
+    public FrameException(String message, @NotNull ResponseCode code) {
+        super(message);
+        this.code = code;
     }
 
-    /**
-     * Ritorna il primo oggetto non nullo
-     *
-     * @param objects
-     * @return
-     */
-    public static Object coalesce(Object... objects) {
-        for (Object object : objects) {
-            if (!isNull(object)) {
-                return object;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Verifica se l'oggetto passato è null ("" e' considerato null)
-     *
-     * @param object
-     * @return
-     */
-    public static boolean isNull(Object object) {
-        return object == null || object.toString().equals("");
+    public FrameException(Throwable throwable, @NotNull ResponseCode code) {
+        super(throwable);
+        this.code = code;
     }
 
 }

@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalUnit;
 
 /**
- * Project: sloth-framework
+ * Project: sloth3-framework
  * Copyright (C) 2022-2025 Enrico Grillini
  * <p>
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
@@ -22,6 +22,11 @@ import java.time.temporal.TemporalUnit;
  * @author Enrico Grillini
  */
 public class DateUtil {
+
+    private DateUtil() {
+        // NOP
+    }
+
     public static final String DATE = "dd/MM/yyyy";
     public static final String DATE_TIME = "dd/MM/yyyy HH:mm:ss";
 
@@ -45,12 +50,19 @@ public class DateUtil {
         }
     }
 
-
     public static LocalDateTime fromOffSetDateTime(OffsetDateTime offsetDateTime) {
         if (ObjectUtil.isNull(offsetDateTime)) {
             return null;
         } else {
             return offsetDateTime.atZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+        }
+    }
+
+    public static OffsetDateTime toOffSetDateTime(LocalDateTime localDateTime) {
+        if (ObjectUtil.isNull(localDateTime)) {
+            return null;
+        } else {
+            return localDateTime.atOffset(ZoneId.systemDefault().getRules().getOffset(localDateTime));
         }
     }
 }

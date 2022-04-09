@@ -1,7 +1,10 @@
-package it.eg.sloth.api.error;
+package it.eg.sloth.spring.context;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * Project: sloth-framework
+ * Project: sloth3-framework
  * Copyright (C) 2022-2025 Enrico Grillini
  * <p>
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
@@ -15,21 +18,9 @@ package it.eg.sloth.api.error;
  *
  * @author Enrico Grillini
  */
-public enum ResponseCode {
-
-    OK("Ok"),
-    DOCUMENTO_NON_TROVATO("Documento non trovato"),
-    DOCUMENTO_GIA_PRESENTE("Id documento è già presente"),
-    GENERIC("Errore generico");
-
-    private String message;
-
-    public String getMessage() {
-        return message;
+@SpringBootApplication
+public class DummyApplication {
+    public static void main (String[] args) {
+        SpringApplication.run(DummyApplication.class,args);
     }
-
-    ResponseCode(String message) {
-        this.message = message;
-    }
-
 }

@@ -1,4 +1,6 @@
-package it.eg.sloth.core.base;
+package it.eg.sloth.api.error.model;
+
+import org.springframework.http.HttpStatus;
 
 /**
  * Project: sloth3-framework
@@ -15,36 +17,27 @@ package it.eg.sloth.core.base;
  *
  * @author Enrico Grillini
  */
-public class ObjectUtil {
+public enum ResponseCode {
 
-    private ObjectUtil() {
-        // NOP
+    OK("Ok", HttpStatus.OK),
+    NOT_FOUND("Non trovato", HttpStatus.NOT_FOUND),
+    BUSINESS_ERROR("Errore generico", HttpStatus.BAD_REQUEST),
+    SYSTEM_ERROR("Errore di sistema", HttpStatus.INTERNAL_SERVER_ERROR);
+
+    private String message;
+    private HttpStatus httpStatus;
+
+    public String getMessage() {
+        return message;
     }
 
-    /**
-     * Ritorna il primo oggetto non nullo
-     *
-     * @param objects
-     * @return
-     */
-    public static Object coalesce(Object... objects) {
-        for (Object object : objects) {
-            if (!isNull(object)) {
-                return object;
-            }
-        }
-
-        return null;
+    public HttpStatus getHttpStatus() {
+        return httpStatus;
     }
 
-    /**
-     * Verifica se l'oggetto passato è null ("" e' considerato null)
-     *
-     * @param object
-     * @return
-     */
-    public static boolean isNull(Object object) {
-        return object == null || object.toString().equals("");
+    ResponseCode(String message, HttpStatus httpStatus) {
+        this.message = message;
+        this.httpStatus = httpStatus;
     }
 
 }

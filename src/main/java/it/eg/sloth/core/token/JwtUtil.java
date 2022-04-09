@@ -1,12 +1,11 @@
-package it.eg.sloth.core.jwt;
+package it.eg.sloth.core.token;
 
 import io.jsonwebtoken.*;
 import it.eg.sloth.core.base.ObjectUtil;
-import it.eg.sloth.core.base.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.FileCopyUtils;
 
 import java.io.IOException;
@@ -25,7 +24,7 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Project: sloth-framework
+ * Project: sloth3-framework
  * Copyright (C) 2022-2025 Enrico Grillini
  * <p>
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
@@ -45,13 +44,9 @@ public class JwtUtil {
         // NOP
     }
 
-    public static final String TOKEN_HEADER = "Authorization";
-    public static final String TOKEN_PREFIX = "Bearer ";
-
     public static PublicKey getPublicKey(String certificatePath) throws IOException, CertificateException {
-        Resource resource = new ClassPathResource(certificatePath);
-
-        try (InputStream inputStream = resource.getInputStream()) {
+        ResourceLoader resourceLoader = new DefaultResourceLoader();
+        try (InputStream inputStream = resourceLoader.getResource(certificatePath).getInputStream()) {
             CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
             X509Certificate cert = (X509Certificate) certificateFactory.generateCertificate(inputStream);
             return cert.getPublicKey();
@@ -59,10 +54,9 @@ public class JwtUtil {
     }
 
     public static PrivateKey getPrivateKey(String certificatePath) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-        Resource resource = new ClassPathResource(certificatePath);
-
-        try (InputStream inputStream = resource.getInputStream()) {
-            byte[] bdata = FileCopyUtils.copyToByteArray(resource.getInputStream());
+        ResourceLoader resourceLoader = new DefaultResourceLoader();
+        try (InputStream inputStream = resourceLoader.getResource(certificatePath).getInputStream()) {
+            byte[] bdata = FileCopyUtils.copyToByteArray(inputStream);
             String pem = new String(bdata, StandardCharsets.UTF_8);
             pem = pem.replace("-----BEGIN PRIVATE KEY-----", "");
             pem = pem.replace("-----END PRIVATE KEY-----", "");
@@ -95,14 +89,6 @@ public class JwtUtil {
 
         // Builds the JWT and serializes it to a compact, URL-safe string
         return builder.compact();
-    }
-
-    public static String extractJwtToken(String headerToken) {
-        if (!ObjectUtil.isNull(headerToken) && headerToken.startsWith(TOKEN_PREFIX)) {
-            return headerToken.replace(TOKEN_PREFIX, StringUtil.EMPTY);
-        } else {
-            return null;
-        }
     }
 
     public static Jws<Claims> validateToken(String token, PublicKey publicKey) {

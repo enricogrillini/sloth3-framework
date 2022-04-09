@@ -1,4 +1,7 @@
-package it.eg.sloth.core.base;
+package it.eg.sloth.api.error.exception;
+
+import it.eg.sloth.api.error.model.ResponseCode;
+import lombok.Getter;
 
 /**
  * Project: sloth3-framework
@@ -15,36 +18,23 @@ package it.eg.sloth.core.base;
  *
  * @author Enrico Grillini
  */
-public class ObjectUtil {
+@Getter
+public class BusinessException extends FrameException {
 
-    private ObjectUtil() {
-        // NOP
+    public BusinessException(Throwable cause) {
+        super(cause, ResponseCode.BUSINESS_ERROR);
     }
 
-    /**
-     * Ritorna il primo oggetto non nullo
-     *
-     * @param objects
-     * @return
-     */
-    public static Object coalesce(Object... objects) {
-        for (Object object : objects) {
-            if (!isNull(object)) {
-                return object;
-            }
-        }
-
-        return null;
+    public BusinessException(Throwable cause, ResponseCode code) {
+        super(cause, code);
     }
 
-    /**
-     * Verifica se l'oggetto passato è null ("" e' considerato null)
-     *
-     * @param object
-     * @return
-     */
-    public static boolean isNull(Object object) {
-        return object == null || object.toString().equals("");
+    public BusinessException(String cause) {
+        super(cause, ResponseCode.BUSINESS_ERROR);
+    }
+
+    public BusinessException(String cause, ResponseCode code) {
+        super(cause, code);
     }
 
 }

@@ -1,4 +1,10 @@
-package it.eg.sloth.core.base;
+package it.eg.sloth.core.token;
+
+import it.eg.sloth.core.base.ObjectUtil;
+import it.eg.sloth.core.base.StringUtil;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Project: sloth3-framework
@@ -15,36 +21,27 @@ package it.eg.sloth.core.base;
  *
  * @author Enrico Grillini
  */
-public class ObjectUtil {
+@Slf4j
+public class TokenUtil {
 
-    private ObjectUtil() {
+    private TokenUtil() {
         // NOP
     }
 
-    /**
-     * Ritorna il primo oggetto non nullo
-     *
-     * @param objects
-     * @return
-     */
-    public static Object coalesce(Object... objects) {
-        for (Object object : objects) {
-            if (!isNull(object)) {
-                return object;
-            }
-        }
+    public static final String TOKEN_HEADER = "Authorization";
+    public static final String TOKEN_PREFIX = "Bearer ";
 
-        return null;
+
+    public static String extractBearerToken(HttpServletRequest request) {
+        return extractBearerToken(request.getHeader(TOKEN_HEADER));
     }
 
-    /**
-     * Verifica se l'oggetto passato è null ("" e' considerato null)
-     *
-     * @param object
-     * @return
-     */
-    public static boolean isNull(Object object) {
-        return object == null || object.toString().equals("");
+    public static String extractBearerToken(String headerToken) {
+        if (!ObjectUtil.isNull(headerToken) && headerToken.startsWith(TOKEN_PREFIX)) {
+            return headerToken.replace(TOKEN_PREFIX, StringUtil.EMPTY);
+        } else {
+            return null;
+        }
     }
 
 }

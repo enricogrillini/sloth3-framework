@@ -1,4 +1,7 @@
-package it.eg.sloth.core.base;
+package it.eg.sloth.spring.context;
+
+import it.eg.sloth.api.error.ApiErrorHandler;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 
 /**
  * Project: sloth3-framework
@@ -15,36 +18,7 @@ package it.eg.sloth.core.base;
  *
  * @author Enrico Grillini
  */
-public class ObjectUtil {
-
-    private ObjectUtil() {
-        // NOP
-    }
-
-    /**
-     * Ritorna il primo oggetto non nullo
-     *
-     * @param objects
-     * @return
-     */
-    public static Object coalesce(Object... objects) {
-        for (Object object : objects) {
-            if (!isNull(object)) {
-                return object;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Verifica se l'oggetto passato è null ("" e' considerato null)
-     *
-     * @param object
-     * @return
-     */
-    public static boolean isNull(Object object) {
-        return object == null || object.toString().equals("");
-    }
+@ControllerAdvice
+public class ErrorHandler extends ApiErrorHandler {
 
 }

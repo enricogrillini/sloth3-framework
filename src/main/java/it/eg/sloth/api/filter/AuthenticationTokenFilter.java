@@ -1,8 +1,7 @@
 package it.eg.sloth.api.filter;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import it.eg.sloth.core.jwt.JwtUtil;
+import it.eg.sloth.core.base.ObjectUtil;
+import it.eg.sloth.core.token.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,11 +13,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.PublicKey;
-import java.security.cert.CertificateException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * Project: sloth-framework
+ * Project: sloth3-framework
  * Copyright (C) 2022-2025 Enrico Grillini
  * <p>
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
@@ -33,32 +33,24 @@ import java.security.cert.CertificateException;
  * @author Enrico Grillini
  */
 @Slf4j
-public class JwtAuthenticationCertFilter extends BasicAuthenticationFilter {
+public class AuthenticationTokenFilter extends BasicAuthenticationFilter {
 
-    private PublicKey publicKey;
+    Set<String> tokens;
 
-    public JwtAuthenticationCertFilter(AuthenticationManager authManager, String certificatePath) throws IOException, CertificateException {
+    public AuthenticationTokenFilter(AuthenticationManager authManager, String... tokens) {
         super(authManager);
-        publicKey = JwtUtil.getPublicKey(certificatePath);
+        this.tokens = new HashSet<>(Arrays.asList(tokens));
     }
 
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-        UsernamePasswordAuthenticationToken authentication = getAuthentication(request);
-        if (authentication != null) {
+        String token = TokenUtil.extractBearerToken(request);
+        if (!ObjectUtil.isNull(token) && tokens.contains(token)) {
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(token, null, null);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
         filterChain.doFilter(request, response);
-    }
-
-    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-        Jws<Claims> jws = JwtUtil.validateToken(JwtUtil.extractJwtToken(request.getHeader(JwtUtil.TOKEN_HEADER)), publicKey);
-        if (jws != null) {
-            return new UsernamePasswordAuthenticationToken(jws.getBody().getSubject(), null, null);
-        } else {
-            return null;
-        }
     }
 
 }

@@ -1,15 +1,20 @@
 package it.eg.sloth.api.common;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 
 import java.util.TimeZone;
 
 /**
- * Project: sloth-framework
+ * Project: sloth3-framework
  * Copyright (C) 2022-2025 Enrico Grillini
  * <p>
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
@@ -24,6 +29,9 @@ import java.util.TimeZone;
  * @author Enrico Grillini
  */
 public class ObjectMapperFactory {
+    private ObjectMapperFactory() {
+        // NOP
+    }
 
     public static ObjectMapper objectMapper() {
         return objectMapper(TimeZone.getDefault());
@@ -32,7 +40,11 @@ public class ObjectMapperFactory {
     public static ObjectMapper objectMapper(TimeZone timeZone) {
         return JsonMapper
                 .builder()
-                .addModule(new JavaTimeModule())
+                .addModules(new Jdk8Module(), new JavaTimeModule(), new ParameterNamesModule())
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, false)
+                .enable(SerializationFeature.INDENT_OUTPUT)
+                .serializationInclusion(JsonInclude.Include.NON_ABSENT)
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                 .defaultDateFormat(new StdDateFormat())
                 .defaultTimeZone(timeZone)

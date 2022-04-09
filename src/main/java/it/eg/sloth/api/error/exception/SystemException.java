@@ -1,9 +1,10 @@
-package it.eg.sloth.api.error;
+package it.eg.sloth.api.error.exception;
 
+import it.eg.sloth.api.error.model.ResponseCode;
 import lombok.Getter;
 
 /**
- * Project: sloth-framework
+ * Project: sloth3-framework
  * Copyright (C) 2022-2025 Enrico Grillini
  * <p>
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
@@ -18,23 +19,13 @@ import lombok.Getter;
  * @author Enrico Grillini
  */
 @Getter
-public class BusinessException extends RuntimeException {
+public class SystemException extends FrameException {
 
-    private final ResponseCode responseCode;
-
-    public BusinessException(ResponseCode businessErrorCode) {
-        super();
-        this.responseCode = businessErrorCode;
+    public SystemException(Throwable cause) {
+        super(cause, ResponseCode.SYSTEM_ERROR);
     }
 
-
-    public BusinessException(Throwable cause) {
-        this(cause, ResponseCode.GENERIC);
+    public SystemException(String cause) {
+        super(cause, ResponseCode.SYSTEM_ERROR);
     }
-
-    public BusinessException(Throwable cause, ResponseCode businessErrorCode) {
-        super(cause.getMessage(), cause);
-        this.responseCode = businessErrorCode;
-    }
-
 }

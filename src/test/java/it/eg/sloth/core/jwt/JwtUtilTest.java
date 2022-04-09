@@ -2,6 +2,8 @@ package it.eg.sloth.core.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
+import it.eg.sloth.core.token.JwtUtil;
+import it.eg.sloth.core.token.TokenUtil;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -16,7 +18,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Project: sloth-framework
+ * Project: sloth3-framework
  * Copyright (C) 2022-2025 Enrico Grillini
  * <p>
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
@@ -32,8 +34,8 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class JwtUtilTest {
 
-    private static final String PUBLIC_KEY = "public_key_jwt.pem";
-    private static final String PRIVATE_KEY = "private_key_jwt.pem";
+    private static final String PUBLIC_KEY = "classpath:public_key_jwt.pem";
+    private static final String PRIVATE_KEY = "classpath:private_key_jwt.pem";
 
     @Test
     void jwtUtilTest() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, CertificateException {
@@ -60,11 +62,11 @@ class JwtUtilTest {
         assertNotNull(jwt);
 
         // Token Bearer
-        String headerToken = JwtUtil.TOKEN_PREFIX + jwt;
+        String headerToken = TokenUtil.TOKEN_PREFIX + jwt;
 
         // Estraggo il token JWT dal Bearer token e lo valido
         PublicKey publicKey = JwtUtil.getPublicKey(PUBLIC_KEY);
-        Jws<Claims> jws = JwtUtil.validateToken(JwtUtil.extractJwtToken(headerToken), publicKey);
+        Jws<Claims> jws = JwtUtil.validateToken(TokenUtil.extractBearerToken(headerToken), publicKey);
 
         assertEquals(issuer, jws.getBody().getIssuer());
     }
@@ -72,8 +74,8 @@ class JwtUtilTest {
     @Test
     void jwtUtilKoTest() {
         // extractJwtToken
-        assertNull(JwtUtil.extractJwtToken(null));
-        assertNull(JwtUtil.extractJwtToken("xxx"));
+        assertNull(TokenUtil.extractBearerToken((String) null));
+        assertNull(TokenUtil.extractBearerToken("xxx"));
 
         // validateToken
         assertNull(JwtUtil.validateToken("", null));
