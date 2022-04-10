@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -54,19 +55,29 @@ class SpringDataTest {
 
     @Test
     @Order(2)
+    void selectQueryTest() {
+        List<Document> list = documentRepository.selectQuery(1);
+        assertEquals(1, list.size());
+
+        List<Map<String, Object>> listGen = documentRepository.selectQueryGen(1);
+        assertEquals(1, listGen.size());
+        assertEquals(5, listGen.get(0).values().size());
+        assertEquals(1, listGen.get(0).get("iddocument"));
+    }
+
+    @Test
+    @Order(3)
     void selectFilteredQueryTest() {
         List<Document> list = documentRepository.selectFilteredQuery(null);
         assertEquals(3, list.size());
 
         list = documentRepository.selectFilteredQuery(1);
         assertEquals(1, list.size());
-    }
 
-    @Test
-    @Order(3)
-    void selectQueryTest() {
-        List<Document> list = documentRepository.selectQuery(1);
-        assertEquals(1, list.size());
+        List<Map<String, Object>> listGen = documentRepository.selectFilteredQueryGen(1);
+        assertEquals(1, listGen.size());
+        assertEquals(5, listGen.get(0).values().size());
+        assertEquals(1, listGen.get(0).get("iddocument"));
     }
 
 //    @Test

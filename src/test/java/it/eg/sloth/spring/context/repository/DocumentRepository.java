@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class DocumentRepository {
@@ -26,16 +27,28 @@ public class DocumentRepository {
             "/*W*/\n" +
             "Order By 1";
 
+    public List<Document> selectQuery(Integer idDocument) {
+        return new Query(jdbcTemplate, SQL_DOCUMENT)
+                .addParameter(idDocument)
+                .selectTable(Document.class);
+    }
+
+    public List<Map<String, Object>> selectQueryGen(Integer idDocument) {
+        return new Query(jdbcTemplate, SQL_DOCUMENT)
+                .addParameter(idDocument)
+                .selectTable();
+    }
+
     public List<Document> selectFilteredQuery(Integer idDocument) {
         return new FilteredQuery(jdbcTemplate, SQL_DOCUMENTS)
                 .addBaseFilter("idDocument = ?", idDocument)
                 .selectTable(Document.class);
     }
 
-    public List<Document> selectQuery(Integer idDocument) {
-        return new Query(jdbcTemplate, SQL_DOCUMENT)
-                .addParameter(idDocument)
-                .selectTable(Document.class);
+    public List<Map<String, Object>> selectFilteredQueryGen(Integer idDocument) {
+        return new FilteredQuery(jdbcTemplate, SQL_DOCUMENTS)
+                .addBaseFilter("idDocument = ?", idDocument)
+                .selectTable();
     }
 
     @Transactional

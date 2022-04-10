@@ -1,8 +1,10 @@
 package it.eg.sloth.core.db;
 
+import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Project: sloth3-framework
@@ -31,5 +33,10 @@ public interface SelectQueryInterface {
 
     <T> List<T> selectTable(Class<T> classType);
 
+    List<Map<String, Object>> selectTable();
+
     <T> T selectRow(Class<T> classType);
+
+    Map<String, Object> selectRow();
+
 }

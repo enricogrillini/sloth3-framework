@@ -3,9 +3,11 @@ package it.eg.sloth.core.db;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Project: sloth3-framework
@@ -44,6 +46,14 @@ public abstract class SelectAbstractQuery implements SelectQueryInterface {
 
     public <T> T selectRow(Class<T> classType) {
         return getJdbcTemplate().queryForObject(elabStatement(), new BeanPropertyRowMapper<>(classType), values());
+    }
+
+    public List<Map<String, Object>> selectTable() {
+        return getJdbcTemplate().query(elabStatement(), new ColumnMapRowMapper(), values());
+    }
+
+    public Map<String, Object> selectRow() {
+        return getJdbcTemplate().queryForObject(elabStatement(), new ColumnMapRowMapper(), values());
     }
 
 }
