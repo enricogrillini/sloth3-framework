@@ -1,4 +1,4 @@
-package it.eg.sloth.spring.context;
+package it.eg.sloth.spring.context.config;
 
 import it.eg.sloth.api.filter.AccessLogBaseFilter;
 import org.springframework.core.annotation.Order;

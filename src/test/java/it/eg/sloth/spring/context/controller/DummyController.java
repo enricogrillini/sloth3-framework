@@ -1,4 +1,4 @@
-package it.eg.sloth.spring.context;
+package it.eg.sloth.spring.context.controller;
 
 import it.eg.sloth.api.error.exception.BusinessException;
 import it.eg.sloth.api.error.exception.SystemException;

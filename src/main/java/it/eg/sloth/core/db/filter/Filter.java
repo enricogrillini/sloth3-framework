@@ -1,7 +1,6 @@
-package it.eg.sloth.spring.context;
+package it.eg.sloth.core.db.filter;
 
-import it.eg.sloth.api.error.ApiErrorHandler;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import java.util.Collection;
 
 /**
  * Project: sloth3-framework
@@ -18,7 +17,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
  *
  * @author Enrico Grillini
  */
-@ControllerAdvice
-public class ErrorHandler extends ApiErrorHandler {
+public interface Filter {
+
+    String getWhereCondition();
+
+    Collection<Object> values();
 
 }

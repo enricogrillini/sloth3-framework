@@ -1,4 +1,4 @@
-package it.eg.sloth.spring.context;
+package it.eg.sloth.spring.context.config;
 
 import it.eg.sloth.api.filter.AuthenticationTokenFilter;
 import org.springframework.context.annotation.Configuration;
