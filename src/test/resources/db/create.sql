@@ -7,3 +7,4 @@ Create Table Document
 
 -- Primary Key Document
 Alter Table Document Add Constraint document_pk Primary Key (Iddocument);
+
