@@ -1,9 +1,11 @@
 package it.eg.sloth.spring;
 
+import it.eg.sloth.api.decodemap.DecodeValue;
 import it.eg.sloth.spring.context.DummyApplication;
 import it.eg.sloth.spring.context.config.SecurityConfig;
 import it.eg.sloth.spring.context.controller.DummyController;
 import it.eg.sloth.spring.context.model.Document;
+import it.eg.sloth.spring.context.model.DocumentMapper;
 import it.eg.sloth.spring.context.repository.DocumentRepository;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -80,29 +82,13 @@ class SpringDataTest {
         assertEquals(1, listGen.get(0).get("iddocument"));
     }
 
-//    @Test
-//    void insertDocument() {
-//
-//
-//        Query query = new Query(jdbcTemplate, "select * from DOCUMENT");
-//        List<Document> list = query.selectTable(Document.class);
-//
-//        query.setStatement("select * from DOCUMENT where idDocument = ?");
-//        query.addParameter(1);
-//        list = query.selectTable(Document.class);
-//
-//        Document aaa =    query.selectRow(Document.class);
-//
-//        try {
-//            documentRepository.insertError(4, true);
-//        } catch (Exception a) {
-//
-//        }
-//
-//        list = documentRepository.select(null);
-//
-//        System.out.println(list);
-//    }
+    @Test
+    @Order(4)
+    void mapTest() {
+        List<Document> list = documentRepository.selectFilteredQuery(null);
+        List<DecodeValue<Integer>> decodeMap = DocumentMapper.INSTANCE.toDecodeMap(list);
 
+        assertEquals(3, decodeMap.size());
+    }
 
 }

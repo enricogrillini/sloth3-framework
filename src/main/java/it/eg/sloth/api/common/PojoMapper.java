@@ -21,7 +21,7 @@ import java.time.OffsetDateTime;
  *
  * @author Enrico Grillini
  */
-public class BffMapper {
+public class PojoMapper {
 
     private static final String TRUE = "S";
     private static final String FALSE = "N";

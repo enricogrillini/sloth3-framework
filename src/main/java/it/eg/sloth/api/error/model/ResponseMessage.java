@@ -36,7 +36,7 @@ public class ResponseMessage {
         return getCode().getMessage();
     }
 
-    @Schema(description = "Descrizione dettagliata", required = true, example = "Documento inserito corerttamente")
+    @Schema(description = "Descrizione dettagliata", required = true, example = "Operazione eseguita correttamente")
     private String description;
 
     public ResponseMessage() {
