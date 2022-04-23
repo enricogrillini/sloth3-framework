@@ -92,7 +92,7 @@ public class JwtUtil {
     }
 
     public static Jws<Claims> validateToken(String token, PublicKey publicKey) {
-        if (!ObjectUtil.isNull(token)) {
+        if (!ObjectUtil.isEmpty(token)) {
             try {
                 return Jwts.parser()
                         .setSigningKey(publicKey)

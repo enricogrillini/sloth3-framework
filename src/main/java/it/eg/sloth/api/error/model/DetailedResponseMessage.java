@@ -1,6 +1,6 @@
 package it.eg.sloth.api.error.model;
 
-import org.springframework.http.HttpStatus;
+import lombok.Data;
 
 /**
  * Project: sloth3-framework
@@ -17,28 +17,9 @@ import org.springframework.http.HttpStatus;
  *
  * @author Enrico Grillini
  */
-public enum ResponseCode {
+@Data
+public class DetailedResponseMessage<T> extends ResponseMessage {
 
-    OK("Ok", HttpStatus.OK),
-    NOT_FOUND("Non trovato", HttpStatus.NOT_FOUND),
-    VALIDATION_ERROR("Errore generico", HttpStatus.BAD_REQUEST),
-    BUSINESS_ERROR("Errore generico", HttpStatus.BAD_REQUEST),
-    SYSTEM_ERROR("Errore di sistema", HttpStatus.INTERNAL_SERVER_ERROR);
-
-    private String message;
-    private HttpStatus httpStatus;
-
-    public String getMessage() {
-        return message;
-    }
-
-    public HttpStatus getHttpStatus() {
-        return httpStatus;
-    }
-
-    ResponseCode(String message, HttpStatus httpStatus) {
-        this.message = message;
-        this.httpStatus = httpStatus;
-    }
+    T detail;
 
 }

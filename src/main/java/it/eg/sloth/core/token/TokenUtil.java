@@ -37,7 +37,7 @@ public class TokenUtil {
     }
 
     public static String extractBearerToken(String headerToken) {
-        if (!ObjectUtil.isNull(headerToken) && headerToken.startsWith(TOKEN_PREFIX)) {
+        if (!ObjectUtil.isEmpty(headerToken) && headerToken.startsWith(TOKEN_PREFIX)) {
             return headerToken.replace(TOKEN_PREFIX, StringUtil.EMPTY);
         } else {
             return null;

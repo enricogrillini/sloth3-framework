@@ -23,8 +23,8 @@ import java.time.OffsetDateTime;
  */
 public class PojoMapper {
 
-    private static final String TRUE = "S";
-    private static final String FALSE = "N";
+    private static final String TRUE_VALUE = "S";
+    private static final String FALSE_VALUE = "N";
 
     public OffsetDateTime toOffSetDateTime(LocalDateTime value) {
         return DateUtil.toOffSetDateTime(value);
@@ -35,18 +35,18 @@ public class PojoMapper {
     }
 
     public String toString(Boolean value) {
-        if (ObjectUtil.isNull(value)) {
+        if (ObjectUtil.isEmpty(value)) {
             return null;
         } else {
-            return value ? TRUE : FALSE;
+            return Boolean.TRUE.equals(value) ? TRUE_VALUE : FALSE_VALUE;
         }
     }
 
     public Boolean fromString(String value) {
-        if (ObjectUtil.isNull(value)) {
+        if (ObjectUtil.isEmpty(value)) {
             return null;
         } else {
-            return TRUE.equals(value);
+            return TRUE_VALUE.equals(value);
         }
     }
 

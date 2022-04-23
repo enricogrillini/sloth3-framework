@@ -48,7 +48,7 @@ public class FilteredQuery extends SelectAbstractQuery {
         StringBuilder sqlFilter = new StringBuilder();
         for (Filter filtro : filterList) {
             String statement = filtro.getWhereCondition();
-            if (!ObjectUtil.isNull(statement)) {
+            if (!ObjectUtil.isEmpty(statement)) {
                 sqlFilter.append(sqlFilter.length() == 0 ? statement : " And " + statement);
             }
         }

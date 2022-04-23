@@ -45,7 +45,7 @@ public class AuthenticationTokenFilter extends BasicAuthenticationFilter {
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         String token = TokenUtil.extractBearerToken(request);
-        if (!ObjectUtil.isNull(token) && tokens.contains(token)) {
+        if (!ObjectUtil.isEmpty(token) && tokens.contains(token)) {
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(token, null, null);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

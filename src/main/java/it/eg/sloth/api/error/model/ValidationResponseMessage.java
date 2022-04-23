@@ -1,15 +1,13 @@
-package it.eg.sloth.core.db.filter;
+package it.eg.sloth.api.error.model;
 
-import it.eg.sloth.core.base.ObjectUtil;
 import it.eg.sloth.core.base.StringUtil;
 import lombok.Data;
 
-import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * Project: sloth-framework
- * Copyright (C) 2019-2021 Enrico Grillini
+ * Project: sloth3-framework
+ * Copyright (C) 2022-2025 Enrico Grillini
  * <p>
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -23,29 +21,16 @@ import java.util.Collection;
  * @author Enrico Grillini
  */
 @Data
-public class BaseFilter implements Filter {
+public class ValidationResponseMessage extends ResponseMessage {
 
-    private String sql;
-    private Object value;
+    private Collection<String> validationMessageList;
 
-    public BaseFilter(String sql, Object value) {
-        this.sql = sql;
-        this.value = value;
-    }
+    public ValidationResponseMessage(Collection<String> validationMessageList) {
+        super(StringUtil.EMPTY, ResponseCode.OK);
 
-    public String getWhereCondition() {
-        if (ObjectUtil.isEmpty(getValue())) {
-            return StringUtil.EMPTY;
-        } else {
-            return getSql();
-        }
-    }
-
-    public Collection<Object> values() {
-        if (ObjectUtil.isEmpty(value)) {
-            return Arrays.asList();
-        } else {
-            return Arrays.asList(value);
+        if (!validationMessageList.isEmpty()) {
+            setCode(ResponseCode.VALIDATION_ERROR);
+            this.validationMessageList = validationMessageList;
         }
     }
 

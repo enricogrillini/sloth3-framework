@@ -39,7 +39,7 @@ public class AccessLogBaseFilter implements Filter {
         Instant start = Instant.now();
 
         String requestId = req.getHeader(REQUEST_ID);
-        if (ObjectUtil.isNull(requestId)) {
+        if (ObjectUtil.isEmpty(requestId)) {
             requestId = generateRequestId();
         }
 

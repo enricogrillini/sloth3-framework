@@ -49,14 +49,6 @@ class SpringDataTest {
 
     @Test
     @Order(1)
-    void initTest() {
-        documentRepository.insertError(1, false);
-        documentRepository.insertError(2, false);
-        documentRepository.insertError(3, false);
-    }
-
-    @Test
-    @Order(2)
     void selectQueryTest() {
         List<Document> list = documentRepository.selectQuery(1);
         assertEquals(1, list.size());
@@ -68,7 +60,7 @@ class SpringDataTest {
     }
 
     @Test
-    @Order(3)
+    @Order(2)
     void selectFilteredQueryTest() {
         List<Document> list = documentRepository.selectFilteredQuery(null);
         assertEquals(3, list.size());
@@ -83,7 +75,7 @@ class SpringDataTest {
     }
 
     @Test
-    @Order(4)
+    @Order(3)
     void mapTest() {
         List<Document> list = documentRepository.selectFilteredQuery(null);
         List<DecodeValue<Integer>> decodeMap = DocumentMapper.INSTANCE.toDecodeMap(list);

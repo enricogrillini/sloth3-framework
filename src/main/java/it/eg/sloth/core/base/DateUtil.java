@@ -35,7 +35,7 @@ public class DateUtil {
     }
 
     public static String format(LocalDateTime localDateTime, String pattern) {
-        if (ObjectUtil.isNull(localDateTime)) {
+        if (ObjectUtil.isEmpty(localDateTime)) {
             return StringUtil.EMPTY;
         } else {
             return localDateTime.format(DateTimeFormatter.ofPattern(pattern));
@@ -43,7 +43,7 @@ public class DateUtil {
     }
 
     public static LocalDateTime trunc(LocalDateTime localDateTime, TemporalUnit temporalUnit) {
-        if (ObjectUtil.isNull(localDateTime)) {
+        if (ObjectUtil.isEmpty(localDateTime)) {
             return null;
         } else {
             return localDateTime.truncatedTo(temporalUnit);
@@ -51,7 +51,7 @@ public class DateUtil {
     }
 
     public static LocalDateTime fromOffSetDateTime(OffsetDateTime offsetDateTime) {
-        if (ObjectUtil.isNull(offsetDateTime)) {
+        if (ObjectUtil.isEmpty(offsetDateTime)) {
             return null;
         } else {
             return offsetDateTime.atZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
@@ -59,7 +59,7 @@ public class DateUtil {
     }
 
     public static OffsetDateTime toOffSetDateTime(LocalDateTime localDateTime) {
-        if (ObjectUtil.isNull(localDateTime)) {
+        if (ObjectUtil.isEmpty(localDateTime)) {
             return null;
         } else {
             return localDateTime.atOffset(ZoneId.systemDefault().getRules().getOffset(localDateTime));

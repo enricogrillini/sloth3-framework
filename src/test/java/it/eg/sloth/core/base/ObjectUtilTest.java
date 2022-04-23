@@ -1,8 +1,8 @@
 package it.eg.sloth.core.base;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,8 +33,9 @@ class ObjectUtilTest {
 
     @Test
     void isNullTest() {
-        assertTrue(ObjectUtil.isNull(null));
-        assertTrue(ObjectUtil.isNull(""));
-        assertFalse(ObjectUtil.isNull(Double.valueOf(0)));
+        assertTrue(ObjectUtil.isEmpty(null));
+        assertTrue(ObjectUtil.isEmpty(""));
+        assertTrue(ObjectUtil.isEmpty(new ArrayList<>()));
+        assertFalse(ObjectUtil.isEmpty(Double.valueOf(0)));
     }
 }

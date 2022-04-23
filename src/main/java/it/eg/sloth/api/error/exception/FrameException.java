@@ -25,12 +25,12 @@ public abstract class FrameException extends RuntimeException {
 
     private final ResponseCode code;
 
-    public FrameException(String message, @NotNull ResponseCode code) {
+    protected FrameException(String message, @NotNull ResponseCode code) {
         super(message);
         this.code = code;
     }
 
-    public FrameException(Throwable throwable, @NotNull ResponseCode code) {
+    protected FrameException(Throwable throwable, @NotNull ResponseCode code) {
         super(throwable);
         this.code = code;
     }

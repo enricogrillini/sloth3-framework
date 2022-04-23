@@ -1,5 +1,7 @@
 package it.eg.sloth.core.base;
 
+import java.util.Collection;
+
 /**
  * Project: sloth3-framework
  * Copyright (C) 2022-2025 Enrico Grillini
@@ -29,7 +31,7 @@ public class ObjectUtil {
      */
     public static Object coalesce(Object... objects) {
         for (Object object : objects) {
-            if (!isNull(object)) {
+            if (!isEmpty(object)) {
                 return object;
             }
         }
@@ -38,13 +40,21 @@ public class ObjectUtil {
     }
 
     /**
-     * Verifica se l'oggetto passato è null ("" e' considerato null)
+     * Verifica se l'oggetto passato è vuoto ("" e' considerato null)
      *
      * @param object
      * @return
      */
-    public static boolean isNull(Object object) {
-        return object == null || object.toString().equals("");
+    public static boolean isEmpty(Object object) {
+        if (object == null) {
+            return true;
+        } else if (object instanceof Collection) {
+            return ((Collection) object).isEmpty();
+        } else if (object instanceof String) {
+            return StringUtil.EMPTY.equals(object);
+        } else {
+            return false;
+        }
     }
 
 }

@@ -1,6 +1,5 @@
 package it.eg.sloth.core.db;
 
-import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.List;

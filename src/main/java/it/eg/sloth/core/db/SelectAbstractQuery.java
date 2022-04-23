@@ -35,7 +35,7 @@ public abstract class SelectAbstractQuery implements SelectQueryInterface {
 
     protected abstract Object[] values();
 
-    public SelectAbstractQuery(JdbcTemplate jdbcTemplate, String statement) {
+    protected SelectAbstractQuery(JdbcTemplate jdbcTemplate, String statement) {
         this.jdbcTemplate = jdbcTemplate;
         this.statement = statement;
     }
