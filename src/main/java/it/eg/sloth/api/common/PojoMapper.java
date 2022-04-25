@@ -36,7 +36,7 @@ public class PojoMapper {
 
     public String toString(Boolean value) {
         if (ObjectUtil.isEmpty(value)) {
-            return null;
+            return FALSE_VALUE;
         } else {
             return Boolean.TRUE.equals(value) ? TRUE_VALUE : FALSE_VALUE;
         }
@@ -44,7 +44,7 @@ public class PojoMapper {
 
     public Boolean fromString(String value) {
         if (ObjectUtil.isEmpty(value)) {
-            return null;
+            return false;
         } else {
             return TRUE_VALUE.equals(value);
         }

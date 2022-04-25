@@ -1,5 +1,7 @@
 package it.eg.sloth.api.error.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import it.eg.sloth.core.base.StringUtil;
 import lombok.Data;
 
 /**
@@ -20,6 +22,21 @@ import lombok.Data;
 @Data
 public class DetailedResponseMessage<T> extends ResponseMessage {
 
+    @Schema(description = "Dettaglio risposta")
     T detail;
+
+
+    public DetailedResponseMessage() {
+        this(StringUtil.EMPTY, ResponseCode.OK, null);
+    }
+
+    public DetailedResponseMessage(String description, T detail) {
+        this(description, ResponseCode.OK, detail);
+    }
+
+    public DetailedResponseMessage(String description, ResponseCode code, T detail) {
+        super(description, code);
+        this.detail = detail;
+    }
 
 }
