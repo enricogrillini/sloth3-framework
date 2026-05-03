@@ -1,16 +1,17 @@
 package it.eg.sloth.dbmodeler.model;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import it.eg.sloth.dbmodeler.model.connection.DbConnection;
 import it.eg.sloth.dbmodeler.model.schema.Schema;
 import it.eg.sloth.dbmodeler.reader.DbSchemaReader;
+import it.eg.sloth.spring.config.BaseObjectMapperConfig;
 import lombok.Data;
 import org.apache.commons.io.FileUtils;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
 
 /**
  * Project: sloth-framework
@@ -34,21 +35,26 @@ public class DataBase implements JsonInterface {
     DbConnection dbConnection;
     Schema schema;
 
-//    public void refreshSchema() throws FrameworkException, SQLException, IOException {
-//        DbSchemaReader dbSchemaReader = DbSchemaReader.Factory.getDbSchemaReader(dbConnection.getDataBaseType());
-//        this.setSchema(dbSchemaReader.refreshSchemaByDbConnection(this.getDbConnection()));
-//    }
+    public void refreshSchema() {
+        DbSchemaReader dbSchemaReader = DbSchemaReader.Factory.getDbSchemaReader(dbConnection);
+        //this.setSchema(dbSchemaReader.refreshSchemaByDbConnection(this.getDbConnection()));
+    }
 
     public void readJson(File file) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
+        JsonMapper mapper = BaseObjectMapperConfig.defaultJsonMapper();
         DataBase dataBase = mapper.readValue(FileUtils.readFileToString(file, StandardCharsets.UTF_8), DataBase.class);
 
         dbConnection = dataBase.getDbConnection();
         schema = dataBase.getSchema();
     }
 
-    public void readJson(String fileName) throws IOException {
-        readJson(new File(fileName));
+    public void readYaml(File file) throws IOException {
+        YAMLMapper mapper = BaseObjectMapperConfig.defaultYamlMapper();
+        DataBase dataBase = mapper.readValue(FileUtils.readFileToString(file, StandardCharsets.UTF_8), DataBase.class);
+
+        dbConnection = dataBase.getDbConnection();
+        schema = dataBase.getSchema();
     }
+
 
 }

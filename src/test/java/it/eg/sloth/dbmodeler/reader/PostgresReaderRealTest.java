@@ -1,6 +1,7 @@
 package it.eg.sloth.dbmodeler.reader;
 
 import it.eg.sloth.TestUtil;
+import it.eg.sloth.dbmodeler.model.connection.DbConnection;
 import it.eg.sloth.dbmodeler.model.database.DataBaseType;
 import it.eg.sloth.dbmodeler.model.schema.Schema;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,14 +18,21 @@ class PostgresReaderRealTest extends AbstractReaderTest {
 
     @BeforeEach
     void init() throws IOException, SQLException {
-        postgresSchemaReader = DbSchemaReader.Factory.getDbSchemaReader(DataBaseType.POSTGRES, "jdbc:postgresql://localhost:5432/postgres", "gilda", "gilda", "gilda");
+        DbConnection dbConnection = DbConnection.builder()
+                .dataBaseType(DataBaseType.POSTGRES)
+                .jdbcUrl("jdbc:postgresql://localhost:5432/postgres")
+                .dbUser("gilda")
+                .dbPassword("gilda")
+                .dbOwner("gilda")
+                .build();
+
+        postgresSchemaReader = DbSchemaReader.Factory.getDbSchemaReader(dbConnection);
 
     }
 
     @Test
     void readSchemaTest() throws SQLException, IOException {
         Schema schema = postgresSchemaReader.refreshSchema();
-
 
         TestUtil.assertYamlEqualsFileToObj("db/Schema.yaml", schema);
 

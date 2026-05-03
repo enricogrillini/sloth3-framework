@@ -1,12 +1,10 @@
 package it.eg.sloth.dbmodeler.reader;
 
-import it.eg.sloth.dbmodeler.model.database.DataBaseType;
+import it.eg.sloth.dbmodeler.model.connection.DbConnection;
 import it.eg.sloth.dbmodeler.model.schema.Schema;
 import it.eg.sloth.dbmodeler.model.schema.sequence.Sequence;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -125,15 +123,20 @@ public interface DbSchemaReader {
 //            }
 //        }
 
-        public static DbSchemaReader getDbSchemaReader(DataBaseType dataBaseType, String jdbcUrl, String username, String password, String owner) {
+        public static DbSchemaReader getDbSchemaReader(DbConnection dbConnection) {
+            String jdbcUrl = dbConnection.getJdbcUrl();
+            String dbUser = dbConnection.getDbUser();
+            String dbPassword = dbConnection.getDbPassword();
+            String dbOwner = dbConnection.getDbOwner();
+
             // Imposto il reader corretto
-            switch (dataBaseType) {
+            switch (dbConnection.getDataBaseType()) {
 //                case H2:
 //                    return new H2SchemaReader();
 //                case ORACLE:
 //                    return new OracleSchemaReader();
                 case POSTGRES:
-                    return new PostgresSchemaReader(jdbcUrl, username, password, owner);
+                    return new PostgresSchemaReader(jdbcUrl, dbUser, dbPassword, dbOwner);
                 default:
                     return null;
             }
