@@ -76,7 +76,7 @@ public class PostgresSchemaReader extends DbSchemaAbstractReader implements DbSc
             "Order By t.relname, i.relname, a.attnum";
 
     private static final String SQL_DB_SEQUENCES = """
-            Select c.relname name\
+            Select c.relname name
             From pg_class c
                  Inner Join pg_namespace n on c.relnamespace = n.oid
             Where c.relkind = 'S' And

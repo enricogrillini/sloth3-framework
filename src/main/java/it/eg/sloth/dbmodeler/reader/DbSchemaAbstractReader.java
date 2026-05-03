@@ -43,15 +43,14 @@ public abstract class DbSchemaAbstractReader implements DbSchemaReader {
         this.dataBaseType = dataBaseType;
         this.owner = owner;
 
-
-        // 2. Crea il DataSource
+        // Creo il DataSource
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         dataSource.setUrl(jdbcUrl);
         dataSource.setUsername(username);
         dataSource.setPassword(password);
 
-        NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+        // Imposto il jdbcTemplate
+        jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
 

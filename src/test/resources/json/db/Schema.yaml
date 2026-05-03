@@ -1,0 +1,23 @@
+---
+tableCollection: []
+viewCollection: []
+packageCollection: []
+sequenceCollection:
+  - name: "batch_idcrontrigger"
+  - name: "batch_iddata"
+  - name: "batch_idesecuzione"
+  - name: "batch_idesecuzionedettaglio"
+  - name: "batch_idjob"
+  - name: "batch_idparameter"
+  - name: "frame_seq_idalerts"
+  - name: "monitor_idlogin"
+  - name: "sec_seq_idutente"
+  - name: "seq_idalert"
+  - name: "seq_idcliente"
+  - name: "seq_idcollaboratore"
+  - name: "seq_idprofilo"
+  - name: "seq_idprogetto"
+  - name: "seq_idsottoprogetto"
+  - name: "seq_idtipologiadato"
+functionCollection: []
+procedureCollection: []

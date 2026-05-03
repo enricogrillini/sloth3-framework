@@ -1,6 +1,8 @@
 package it.eg.sloth.dbmodeler.reader;
 
+import it.eg.sloth.TestUtil;
 import it.eg.sloth.dbmodeler.model.database.DataBaseType;
+import it.eg.sloth.dbmodeler.model.schema.Schema;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -21,7 +23,11 @@ class PostgresReaderRealTest extends AbstractReaderTest {
 
     @Test
     void readSchemaTest() throws SQLException, IOException {
-        postgresSchemaReader.refreshSchema();
+        Schema schema = postgresSchemaReader.refreshSchema();
+
+
+        TestUtil.assertYamlEqualsFileToObj("db/Schema.yaml", schema);
+
     }
 
     @Test
