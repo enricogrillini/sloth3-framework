@@ -126,6 +126,7 @@ public class Schema implements JsonInterface {
         return this;
     }
 
+
     // Function
     public Collection<Function> getFunctionCollection() {
         return Collections.unmodifiableCollection(functionMap.values());

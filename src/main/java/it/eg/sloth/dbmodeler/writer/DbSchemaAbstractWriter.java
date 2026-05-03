@@ -8,9 +8,8 @@ import it.eg.sloth.dbmodeler.model.schema.code.Procedure;
 import it.eg.sloth.dbmodeler.model.schema.sequence.Sequence;
 import it.eg.sloth.dbmodeler.model.schema.table.*;
 import it.eg.sloth.dbmodeler.model.schema.view.View;
-import it.eg.sloth.framework.common.base.BaseFunction;
-import it.eg.sloth.framework.common.base.StringUtil;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -164,11 +163,11 @@ public abstract class DbSchemaAbstractWriter implements DbSchemaWriter {
             }
         }
 
-        if (tablespace && !BaseFunction.isBlank(table.getTablespace())) {
+        if (tablespace && !StringUtils.isEmpty(table.getTablespace())) {
             result.append("\nTablespace " + table.getTablespace());
         }
 
-        if (storage && !BaseFunction.isNull(table.getInitial())) {
+        if (storage && table.getInitial() != null) {
             result.append(MessageFormat.format("\nStorage (Initial {0})", calcSize(table.getInitial())));
         }
 
@@ -176,7 +175,7 @@ public abstract class DbSchemaAbstractWriter implements DbSchemaWriter {
 
         // Commenti
         for (TableColumn tableColumn : table.getTableColumnCollection()) {
-            result.append(MessageFormat.format(SQL_COLUMN_COMMENT, table.getName(), tableColumn.getName(), BaseFunction.nvl(tableColumn.getDescription(), "")));
+            result.append(MessageFormat.format(SQL_COLUMN_COMMENT, table.getName(), tableColumn.getName(), StringUtils.defaultIfEmpty(tableColumn.getDescription(), "")));
         }
 
         result.append("\n");
@@ -192,13 +191,13 @@ public abstract class DbSchemaAbstractWriter implements DbSchemaWriter {
                 continue;
             }
 
-            result.append(MessageFormat.format(INDEX, index.getName(), table.getName(), index.isUniqueness() ? "Unique " : "", StringUtil.join(index.getColumns())));
+            result.append(MessageFormat.format(INDEX, index.getName(), table.getName(), index.isUniqueness() ? "Unique " : "", String.join(", ", index.getColumns())));
 
-            if (tablespace && !BaseFunction.isBlank(index.getTablespace())) {
+            if (tablespace && !StringUtils.isEmpty(index.getTablespace())) {
                 result.append("\nTablespace " + index.getTablespace());
             }
 
-            if (storage && !BaseFunction.isNull(index.getInitial())) {
+            if (storage && index.getInitial() != null) {
                 result.append(MessageFormat.format("\nStorage (Initial {0})", calcSize(index.getInitial())));
             }
 
@@ -234,7 +233,7 @@ public abstract class DbSchemaAbstractWriter implements DbSchemaWriter {
                     result.append(MessageFormat.format(SQL_FOREIGN_KEY,
                             table.getName(),
                             constraint.getName(),
-                            StringUtil.join(constraint.getColumns().toArray(new String[0])),
+                            String.join(",", constraint.getColumns()),
                             constraint.getReferenceTable(),
                             "Related ")
                     );
@@ -253,7 +252,7 @@ public abstract class DbSchemaAbstractWriter implements DbSchemaWriter {
                 result.append(MessageFormat.format(SQL_PRIMARY_KEY,
                         table.getName(),
                         constraint.getName(),
-                        StringUtil.join(constraint.getColumns().toArray(new String[0]))));
+                        String.join(",", constraint.getColumns())));
             }
         }
 
@@ -268,7 +267,7 @@ public abstract class DbSchemaAbstractWriter implements DbSchemaWriter {
                 result.append(MessageFormat.format(SQL_FOREIGN_KEY,
                         table.getName(),
                         constraint.getName(),
-                        StringUtil.join(constraint.getColumns().toArray(new String[0])),
+                        String.join(",", constraint.getColumns()),
                         constraint.getReferenceTable(),
                         ""));
             }

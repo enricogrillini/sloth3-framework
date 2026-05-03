@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.eg.sloth.dbmodeler.model.connection.DbConnection;
 import it.eg.sloth.dbmodeler.model.schema.Schema;
 import it.eg.sloth.dbmodeler.reader.DbSchemaReader;
-import it.eg.sloth.framework.common.exception.FrameworkException;
 import lombok.Data;
 import org.apache.commons.io.FileUtils;
 
@@ -35,10 +34,10 @@ public class DataBase implements JsonInterface {
     DbConnection dbConnection;
     Schema schema;
 
-    public void refreshSchema() throws FrameworkException, SQLException, IOException {
-        DbSchemaReader dbSchemaReader = DbSchemaReader.Factory.getDbSchemaReader(dbConnection.getDataBaseType());
-        this.setSchema(dbSchemaReader.refreshSchemaByDbConnection(this.getDbConnection()));
-    }
+//    public void refreshSchema() throws FrameworkException, SQLException, IOException {
+//        DbSchemaReader dbSchemaReader = DbSchemaReader.Factory.getDbSchemaReader(dbConnection.getDataBaseType());
+//        this.setSchema(dbSchemaReader.refreshSchemaByDbConnection(this.getDbConnection()));
+//    }
 
     public void readJson(File file) throws IOException {
         ObjectMapper mapper = new ObjectMapper();

@@ -3,7 +3,7 @@ package it.eg.sloth.dbmodeler.writer;
 import it.eg.sloth.dbmodeler.model.database.DataBaseType;
 import it.eg.sloth.dbmodeler.model.schema.Schema;
 import it.eg.sloth.dbmodeler.model.schema.table.Table;
-import it.eg.sloth.framework.common.base.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Project: sloth-framework
@@ -31,7 +31,7 @@ public class H2SchemaWriter extends DbSchemaAbstractWriter implements DbSchemaWr
 
     protected String calcSize(Long size) {
         // Lo storage per i DB H2 non è gestito
-        return StringUtil.EMPTY;
+        return StringUtils.EMPTY;
     }
 
     protected String calcColumnType(String type) {

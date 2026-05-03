@@ -1,8 +1,8 @@
 package it.eg.sloth.dbmodeler.model.schema.code;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import it.eg.sloth.framework.common.base.BaseFunction;
 import lombok.*;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -61,7 +61,7 @@ public class Method {
 
     @JsonIgnore
     public String getUniqueName() {
-        return getName() + BaseFunction.nvl(getOverload(), "");
+        return getName() + StringUtils.defaultIfEmpty(getOverload(), "");
     }
 
     @JsonIgnore

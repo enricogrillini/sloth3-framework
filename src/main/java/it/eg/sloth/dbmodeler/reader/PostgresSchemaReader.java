@@ -1,24 +1,11 @@
 package it.eg.sloth.dbmodeler.reader;
 
-import it.eg.sloth.db.datasource.DataRow;
-import it.eg.sloth.db.datasource.DataTable;
-import it.eg.sloth.db.query.filteredquery.FilteredQuery;
-import it.eg.sloth.db.query.query.Query;
+import it.eg.sloth.db.Query;
 import it.eg.sloth.dbmodeler.model.database.DataBaseType;
-import it.eg.sloth.dbmodeler.model.schema.Schema;
-import it.eg.sloth.dbmodeler.model.schema.code.*;
-import it.eg.sloth.dbmodeler.model.schema.table.Constraint;
-import it.eg.sloth.dbmodeler.model.schema.table.ConstraintType;
-import it.eg.sloth.dbmodeler.model.schema.table.Table;
-import it.eg.sloth.framework.common.base.StringUtil;
-import it.eg.sloth.framework.common.exception.FrameworkException;
+import it.eg.sloth.dbmodeler.model.schema.sequence.Sequence;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Types;
-import java.text.MessageFormat;
+import java.util.List;
 
 /**
  * Project: sloth-framework
@@ -88,12 +75,14 @@ public class PostgresSchemaReader extends DbSchemaAbstractReader implements DbSc
             "/*W*/\n" +
             "Order By t.relname, i.relname, a.attnum";
 
-    private static final String SQL_DB_SEQUENCES = "Select c.relname sequence_name \n" +
-            "From pg_class c\n" +
-            "     Inner Join pg_namespace n on c.relnamespace = n.oid\n" +
-            "Where c.relkind = 'S' And\n" +
-            "      n.nspname = ?\n" +
-            "Order By 1";
+    private static final String SQL_DB_SEQUENCES = """
+            Select c.relname name\
+            From pg_class c
+                 Inner Join pg_namespace n on c.relnamespace = n.oid
+            Where c.relkind = 'S' And
+                  n.nspname = :owner
+            Order By 1
+            """;
 
     private static final String SQL_VIEWS = "Select t.relname view_name,\n" +
             "       v.definition,\n" +
@@ -148,178 +137,179 @@ public class PostgresSchemaReader extends DbSchemaAbstractReader implements DbSc
             "      From pg_catalog.pg_stat_all_indexes t\n" +
             "      Where t.schemaname = ?) indexStats";
 
-    public PostgresSchemaReader() {
-        super(DataBaseType.POSTGRES);
+    public PostgresSchemaReader(String jdbcUrl, String username, String password, String owner) {
+        super(DataBaseType.POSTGRES, jdbcUrl, username, password, owner);
     }
 
+
+    //    @Override
+//    public <R extends DataRow> DataTable<R> tablesData(Connection connection, String owner) throws FrameworkException, SQLException, IOException {
+//        FilteredQuery query = new FilteredQuery(SQL_DB_TABLES);
+//        query.addFilter("n.nspname = ?", Types.VARCHAR, owner);
+//
+//        return query.selectTable(connection);
+//    }
+//
+//    @Override
+//    public <R extends DataRow> DataTable<R> constraintsData(Connection connection, String owner) throws FrameworkException, SQLException, IOException {
+//        FilteredQuery query = new FilteredQuery(SQL_DB_CONSTRAINT);
+//        query.addFilter("n.nspname = ?", Types.VARCHAR, owner);
+//
+//        return query.selectTable(connection);
+//    }
+//
+//    @Override
+//    public <R extends DataRow> DataTable<R> indexesData(Connection connection, String owner) throws FrameworkException, SQLException, IOException {
+//        FilteredQuery query = new FilteredQuery(SQL_DB_INDEXES);
+//        query.addFilter("n.nspname = ?", Types.VARCHAR, owner);
+//
+//        return query.selectTable(connection);
+//    }
+//
+//    @Override
+//    public <R extends DataRow> DataTable<R> constantsData(Connection connection, String tableName, String keyName) throws FrameworkException, SQLException, IOException {
+//        Query query = new Query(MessageFormat.format(SQL_CONSTANTS, tableName));
+//
+//        return query.selectTable(connection);
+//    }
+//
     @Override
-    public <R extends DataRow> DataTable<R> tablesData(Connection connection, String owner) throws FrameworkException, SQLException, IOException {
-        FilteredQuery query = new FilteredQuery(SQL_DB_TABLES);
-        query.addFilter("n.nspname = ?", Types.VARCHAR, owner);
-
-        return query.selectTable(connection);
-    }
-
-    @Override
-    public <R extends DataRow> DataTable<R> constraintsData(Connection connection, String owner) throws FrameworkException, SQLException, IOException {
-        FilteredQuery query = new FilteredQuery(SQL_DB_CONSTRAINT);
-        query.addFilter("n.nspname = ?", Types.VARCHAR, owner);
-
-        return query.selectTable(connection);
-    }
-
-    @Override
-    public <R extends DataRow> DataTable<R> indexesData(Connection connection, String owner) throws FrameworkException, SQLException, IOException {
-        FilteredQuery query = new FilteredQuery(SQL_DB_INDEXES);
-        query.addFilter("n.nspname = ?", Types.VARCHAR, owner);
-
-        return query.selectTable(connection);
-    }
-
-    @Override
-    public <R extends DataRow> DataTable<R> constantsData(Connection connection, String tableName, String keyName) throws FrameworkException, SQLException, IOException {
-        Query query = new Query(MessageFormat.format(SQL_CONSTANTS, tableName));
-
-        return query.selectTable(connection);
-    }
-
-    @Override
-    public <R extends DataRow> DataTable<R> sequencesData(Connection connection, String owner) throws FrameworkException, SQLException, IOException {
+    public List<Sequence> sequencesData() {
         Query query = new Query(SQL_DB_SEQUENCES);
-        query.addParameter(Types.VARCHAR, owner);
+        query.addParameter("owner", getOwner());
 
-        return query.selectTable(connection);
+        return query.select(getJdbcTemplate(), Sequence.class);
     }
-
-    @Override
-    public <R extends DataRow> DataTable<R> viewsData(Connection connection, String owner) throws FrameworkException, SQLException, IOException {
-        FilteredQuery query = new FilteredQuery(SQL_VIEWS);
-        query.addFilter("n.nspname = ?", Types.VARCHAR, owner);
-
-        return query.selectTable(connection);
-    }
-
-    @Override
-    public <R extends DataRow> DataTable<R> viewsColumnsData(Connection connection, String owner) throws FrameworkException, SQLException, IOException {
-        FilteredQuery query = new FilteredQuery(SQL_VIEWS_COLUMNS);
-        query.addFilter("n.nspname = ?", Types.VARCHAR, owner);
-
-        return query.selectTable(connection);
-    }
-
-    @Override
-    public <R extends DataRow> DataTable<R> storedProcedureData(Connection connection, String owner) throws FrameworkException, SQLException, IOException {
-        Query query = new Query(SQL_STORED_PROCEDURE);
-        query.addParameter(Types.VARCHAR, owner);
-
-        return query.selectTable(connection);
-    }
-
-    @Override
-    public <R extends DataRow> DataTable<R> statisticsData(Connection connection, String owner) throws FrameworkException, SQLException, IOException {
-        Query query = new Query(SQL_STATS);
-        query.addParameter(Types.VARCHAR, owner);
-        query.addParameter(Types.VARCHAR, owner);
-
-        return query.selectTable(connection);
-    }
-
-    @Override
-    public String calcColumnType(DataRow dataRow) {
-        if (dataRow.getBigDecimal("data_length") == null) {
-            return dataRow.getString("COLUMN_TYPE");
-        } else {
-            return dataRow.getString("COLUMN_TYPE") + "(" + dataRow.getBigDecimal("data_length").intValue() + ")";
-        }
-    }
-
-    private ConstraintType calcConstraintType(String type) {
-        if ("p".equals(type)) {
-            return ConstraintType.PRIMARY_KEY;
-        } else if ("f".equals(type)) {
-            return ConstraintType.FOREIGN_KEY;
-        } else {
-            return ConstraintType.CHECK;
-        }
-    }
-
-    public void addConstraints(Schema schema, Connection connection, String owner) throws SQLException, FrameworkException, IOException {
-        // Constraints Data
-        DataTable<?> dataTable = constraintsData(connection, owner);
-
-        // Elaborazione
-        for (DataRow dataRow : dataTable) {
-            // Rottura su constraint
-            Table dbTable = schema.getTable(dataRow.getString("table_name"));
-            if (dbTable == null) {
-                // Il constraint non è legato ad una tabella nota
-                continue;
-            }
-
-            Constraint dbConstraint = new Constraint();
-            dbConstraint.setGenerated(false);
-            dbConstraint.setName(dataRow.getString("constraint_name"));
-            dbConstraint.setType(calcConstraintType(dataRow.getString("constraint_type")));
-            dbConstraint.setSearchCondition(dataRow.getString("search_condition"));
-            dbConstraint.setReferenceTable(dataRow.getString("references_table"));
-
-            // Aggiungo le colonne al constraint (se esiste)
-            String constraintColumnIndex = dataRow.getString("constraint_column_index");
-            if (constraintColumnIndex != null) {
-                for (String strIndex : StringUtil.split(constraintColumnIndex)) {
-                    int index = Integer.parseInt(strIndex) - 1;
-                    dbConstraint.addColumn(dbTable.getTableColumn(index).getName());
-                    if (dbConstraint.getType() == ConstraintType.PRIMARY_KEY) {
-                        dbTable.getTableColumn(index).setPrimaryKey(true);
-                    }
-                }
-            }
-
-            dbTable.addConstraint(dbConstraint);
-        }
-    }
-
-    @Override
-    public void addStoredProcedure(Schema schema, Connection connection, String owner) throws SQLException, IOException, FrameworkException {
-        // Stored Procedure Data
-        DataTable<?> dataTable = storedProcedureData(connection, owner);
-
-        Method method = null;
-
-        // Elaborazione
-        for (DataRow dataRow : dataTable) {
-            if (dataRow.getString("procedure_type").equalsIgnoreCase("p")) {
-                // Procedure
-                method = new Procedure(dataRow.getString("procedure_name"), null, dataRow.getString("definition") + ";");
-                schema.addProcedure((Procedure) method);
-
-            } else if (dataRow.getString("procedure_type").equalsIgnoreCase("f")) {
-                // Function
-                method = new Function(dataRow.getString("procedure_name"), null, dataRow.getString("definition") + ";");
-                schema.addFunction((Function) method);
-
-                // Return Type
-                ((Function) method).setReturnType(dataRow.getString("return_type"));
-            }
-
-            // Arguments
-            int i = 0;
-            if (method != null) {
-                String arguments = dataRow.getString("arguments");
-                for (String argument : StringUtil.split(arguments, ",")) {
-                    // FIX Postgres 16
-                    if (argument.startsWith("IN ")) {
-                        argument = argument.substring(3);
-                    }
-
-                    String name = argument.substring(0, argument.indexOf(" "));
-                    String type = argument.substring(argument.indexOf(" ") + 1);
-
-                    method.addArgument(new Argument(name, type, ArgumentType.IN, i++));
-                }
-            }
-        }
-    }
+//
+//    @Override
+//    public <R extends DataRow> DataTable<R> viewsData(Connection connection, String owner) throws FrameworkException, SQLException, IOException {
+//        FilteredQuery query = new FilteredQuery(SQL_VIEWS);
+//        query.addFilter("n.nspname = ?", Types.VARCHAR, owner);
+//
+//        return query.selectTable(connection);
+//    }
+//
+//    @Override
+//    public <R extends DataRow> DataTable<R> viewsColumnsData(Connection connection, String owner) throws FrameworkException, SQLException, IOException {
+//        FilteredQuery query = new FilteredQuery(SQL_VIEWS_COLUMNS);
+//        query.addFilter("n.nspname = ?", Types.VARCHAR, owner);
+//
+//        return query.selectTable(connection);
+//    }
+//
+//    @Override
+//    public <R extends DataRow> DataTable<R> storedProcedureData(Connection connection, String owner) throws FrameworkException, SQLException, IOException {
+//        Query query = new Query(SQL_STORED_PROCEDURE);
+//        query.addParameter(Types.VARCHAR, owner);
+//
+//        return query.selectTable(connection);
+//    }
+//
+//    @Override
+//    public <R extends DataRow> DataTable<R> statisticsData(Connection connection, String owner) throws FrameworkException, SQLException, IOException {
+//        Query query = new Query(SQL_STATS);
+//        query.addParameter(Types.VARCHAR, owner);
+//        query.addParameter(Types.VARCHAR, owner);
+//
+//        return query.selectTable(connection);
+//    }
+//
+//    @Override
+//    public String calcColumnType(DataRow dataRow) {
+//        if (dataRow.getBigDecimal("data_length") == null) {
+//            return dataRow.getString("COLUMN_TYPE");
+//        } else {
+//            return dataRow.getString("COLUMN_TYPE") + "(" + dataRow.getBigDecimal("data_length").intValue() + ")";
+//        }
+//    }
+//
+//    private ConstraintType calcConstraintType(String type) {
+//        if ("p".equals(type)) {
+//            return ConstraintType.PRIMARY_KEY;
+//        } else if ("f".equals(type)) {
+//            return ConstraintType.FOREIGN_KEY;
+//        } else {
+//            return ConstraintType.CHECK;
+//        }
+//    }
+//
+//    public void addConstraints(Schema schema, Connection connection, String owner) throws SQLException, FrameworkException, IOException {
+//        // Constraints Data
+//        DataTable<?> dataTable = constraintsData(connection, owner);
+//
+//        // Elaborazione
+//        for (DataRow dataRow : dataTable) {
+//            // Rottura su constraint
+//            Table dbTable = schema.getTable(dataRow.getString("table_name"));
+//            if (dbTable == null) {
+//                // Il constraint non è legato ad una tabella nota
+//                continue;
+//            }
+//
+//            Constraint dbConstraint = new Constraint();
+//            dbConstraint.setGenerated(false);
+//            dbConstraint.setName(dataRow.getString("constraint_name"));
+//            dbConstraint.setType(calcConstraintType(dataRow.getString("constraint_type")));
+//            dbConstraint.setSearchCondition(dataRow.getString("search_condition"));
+//            dbConstraint.setReferenceTable(dataRow.getString("references_table"));
+//
+//            // Aggiungo le colonne al constraint (se esiste)
+//            String constraintColumnIndex = dataRow.getString("constraint_column_index");
+//            if (constraintColumnIndex != null) {
+//                for (String strIndex : StringUtil.split(constraintColumnIndex)) {
+//                    int index = Integer.parseInt(strIndex) - 1;
+//                    dbConstraint.addColumn(dbTable.getTableColumn(index).getName());
+//                    if (dbConstraint.getType() == ConstraintType.PRIMARY_KEY) {
+//                        dbTable.getTableColumn(index).setPrimaryKey(true);
+//                    }
+//                }
+//            }
+//
+//            dbTable.addConstraint(dbConstraint);
+//        }
+//    }
+//
+//    @Override
+//    public void addStoredProcedure(Schema schema, Connection connection, String owner) throws SQLException, IOException, FrameworkException {
+//        // Stored Procedure Data
+//        DataTable<?> dataTable = storedProcedureData(connection, owner);
+//
+//        Method method = null;
+//
+//        // Elaborazione
+//        for (DataRow dataRow : dataTable) {
+//            if (dataRow.getString("procedure_type").equalsIgnoreCase("p")) {
+//                // Procedure
+//                method = new Procedure(dataRow.getString("procedure_name"), null, dataRow.getString("definition") + ";");
+//                schema.addProcedure((Procedure) method);
+//
+//            } else if (dataRow.getString("procedure_type").equalsIgnoreCase("f")) {
+//                // Function
+//                method = new Function(dataRow.getString("procedure_name"), null, dataRow.getString("definition") + ";");
+//                schema.addFunction((Function) method);
+//
+//                // Return Type
+//                ((Function) method).setReturnType(dataRow.getString("return_type"));
+//            }
+//
+//            // Arguments
+//            int i = 0;
+//            if (method != null) {
+//                String arguments = dataRow.getString("arguments");
+//                for (String argument : StringUtil.split(arguments, ",")) {
+//                    // FIX Postgres 16
+//                    if (argument.startsWith("IN ")) {
+//                        argument = argument.substring(3);
+//                    }
+//
+//                    String name = argument.substring(0, argument.indexOf(" "));
+//                    String type = argument.substring(argument.indexOf(" ") + 1);
+//
+//                    method.addArgument(new Argument(name, type, ArgumentType.IN, i++));
+//                }
+//            }
+//        }
+//    }
 
 
 }
