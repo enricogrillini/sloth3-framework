@@ -59,6 +59,8 @@ public class Query {
 
         if (!filters.isEmpty() && !sql.toLowerCase().contains("where")) {
             whereCondition = "Where " + whereCondition;
+        } else {
+            whereCondition = "And " + whereCondition;
         }
 
         return sql.replace("/*W*/", whereCondition);
