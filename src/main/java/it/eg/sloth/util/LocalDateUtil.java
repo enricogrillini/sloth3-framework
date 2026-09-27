@@ -29,6 +29,15 @@ public class LocalDateUtil {
                 .max(LocalDate::compareTo).orElse(null); // Ritorna null se la lista è vuota
     }
 
+    public static boolean isDateInRange(LocalDate target, LocalDate start, LocalDate end) {
+        if (target == null || start == null || end == null) {
+            return false;
+        }
+
+        // Restituisce true se target è compreso tra start ed end (estremi inclusi)
+        return !target.isBefore(start) && !target.isAfter(end);
+    }
+
     // Converte data e ora da LocalDataTime to OffsetDateTime
     public static OffsetDateTime toOffsetDateTime(LocalDateTime localDateTime) {
         if (localDateTime == null) {
