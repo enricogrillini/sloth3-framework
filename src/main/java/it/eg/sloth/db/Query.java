@@ -55,12 +55,14 @@ public class Query {
     }
 
     private String getSql() {
-        String whereCondition = String.join(" And\n", filters);
-
-        if (!filters.isEmpty() && !sql.toLowerCase().contains("where")) {
-            whereCondition = "Where " + whereCondition;
-        } else {
-            whereCondition = "And " + whereCondition;
+        String whereCondition = "";
+        if (!filters.isEmpty()) {
+            whereCondition = String.join(" And\n", filters);
+            if (!sql.toLowerCase().contains("where")) {
+                whereCondition = "Where " + whereCondition;
+            } else {
+                whereCondition = "And " + whereCondition;
+            }
         }
 
         return sql.replace("/*W*/", whereCondition);
